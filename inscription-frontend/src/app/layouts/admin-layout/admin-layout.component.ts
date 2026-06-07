@@ -56,10 +56,11 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
           </a>
           <a
             routerLink="/admin/agents"
-            routerLinkActive="bg-neutral-800 text-white"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
+            routerLinkActive="bg-primary-50 text-primary-700"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
           >
-            <app-icon name="users" [size]="18" /> Agents
+            <app-icon name="users" [size]="18" />
+            Agents
           </a>
 
           <p
@@ -68,11 +69,12 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
             Analytique
           </p>
           <a
-            routerLink="/admin/stats"
-            routerLinkActive="bg-neutral-800 text-white"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
+            routerLink="/admin/statistiques"
+            routerLinkActive="bg-primary-50 text-primary-700"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
           >
-            <app-icon name="bar-chart-2" [size]="18" /> Statistiques
+            <app-icon name="bar-chart-2" [size]="18" />
+            Statistiques
           </a>
         </nav>
 

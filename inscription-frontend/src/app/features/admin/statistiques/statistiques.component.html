@@ -1,0 +1,163 @@
+<div class="space-y-6">
+  <div>
+    <h1 class="text-2xl font-bold text-neutral-900">Statistiques</h1>
+    <p class="text-neutral-500 text-sm mt-1">
+      Vue analytique de la plateforme d'inscription
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <div
+        class="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"
+      ></div>
+    </div>
+  } @else {
+    <!-- Cartes stats -->
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (stat of statsCards; track stat.key) {
+        <div class="card">
+          <div class="flex items-center justify-between mb-3">
+            <div
+              [class]="
+                'w-10 h-10 rounded-xl flex items-center justify-center ' +
+                stat.color
+              "
+            >
+              <app-icon [name]="stat.icon" [size]="20" />
+            </div>
+            <span [class]="'text-3xl font-bold ' + stat.textColor">
+              {{ compter(stat.key) }}
+            </span>
+          </div>
+          <p class="text-sm font-medium text-neutral-600">{{ stat.label }}</p>
+          <div class="mt-2 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+            <div
+              [class]="
+                'h-full rounded-full transition-all ' +
+                stat.color.split(' ')[0].replace('50', '500')
+              "
+              [style.width.%]="getPourcentage(stat.key)"
+            ></div>
+          </div>
+          <p class="text-xs text-neutral-400 mt-1">
+            {{ getPourcentage(stat.key) }}% du total
+          </p>
+        </div>
+      }
+    </div>
+
+    <!-- Métriques clés -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="card text-center">
+        <div
+          class="w-14 h-14 bg-success-50 rounded-2xl flex items-center justify-center mx-auto mb-3"
+        >
+          <app-icon name="check-circle" [size]="28" class="text-success-600" />
+        </div>
+        <p class="text-4xl font-black text-success-600">
+          {{ getTauxValidation() }}%
+        </p>
+        <p class="text-sm font-medium text-neutral-600 mt-1">
+          Taux de validation
+        </p>
+      </div>
+
+      <div class="card text-center">
+        <div
+          class="w-14 h-14 bg-danger-50 rounded-2xl flex items-center justify-center mx-auto mb-3"
+        >
+          <app-icon name="x-circle" [size]="28" class="text-danger-600" />
+        </div>
+        <p class="text-4xl font-black text-danger-600">{{ getTauxRejet() }}%</p>
+        <p class="text-sm font-medium text-neutral-600 mt-1">Taux de rejet</p>
+      </div>
+
+      <div class="card text-center">
+        <div
+          class="w-14 h-14 bg-primary-50 rounded-2xl flex items-center justify-center mx-auto mb-3"
+        >
+          <app-icon name="bar-chart-2" [size]="28" class="text-primary-600" />
+        </div>
+        <p class="text-4xl font-black text-primary-600">
+          {{ getScoreMoyen() }}%
+        </p>
+        <p class="text-sm font-medium text-neutral-600 mt-1">Score moyen</p>
+      </div>
+    </div>
+
+    <!-- Dossiers par mois -->
+    <div class="card">
+      <h2 class="text-lg font-semibold text-neutral-900 mb-6">
+        Dossiers créés par mois
+      </h2>
+      @if (getDossiersParMois().length === 0) {
+        <p class="text-neutral-500 text-sm text-center py-8">
+          Aucune donnée disponible
+        </p>
+      } @else {
+        <div class="space-y-4">
+          @for (item of getDossiersParMois(); track item.mois) {
+            <div class="flex items-center gap-4">
+              <div class="w-20 text-xs text-neutral-500 flex-shrink-0">
+                {{ item.mois }}
+              </div>
+              <div class="flex-1 h-7 bg-neutral-100 rounded-lg overflow-hidden">
+                <div
+                  class="h-full bg-primary-500 rounded-lg transition-all duration-500 flex items-center justify-end pr-2"
+                  [style.width.%]="getBarWidth(item.count)"
+                >
+                  <span class="text-xs font-bold text-white">{{
+                    item.count
+                  }}</span>
+                </div>
+              </div>
+              <div
+                class="w-8 text-sm font-semibold text-neutral-700 text-right"
+              >
+                {{ item.count }}
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Répartition statuts -->
+    <div class="card">
+      <h2 class="text-lg font-semibold text-neutral-900 mb-6">
+        Répartition par statut
+      </h2>
+      <div class="space-y-3">
+        @for (stat of statsCards; track stat.key) {
+          @if (stat.key !== "TOUS") {
+            <div class="flex items-center gap-3">
+              <div class="w-28 text-sm text-neutral-600 flex-shrink-0">
+                {{ stat.label }}
+              </div>
+              <div
+                class="flex-1 h-4 bg-neutral-100 rounded-full overflow-hidden"
+              >
+                <div
+                  [class]="
+                    'h-full rounded-full transition-all duration-500 ' +
+                    stat.color.split(' ')[0].replace('50', '400')
+                  "
+                  [style.width.%]="getPourcentage(stat.key)"
+                ></div>
+              </div>
+              <div class="w-12 text-right">
+                <span class="text-xs font-semibold text-neutral-700">{{
+                  compter(stat.key)
+                }}</span>
+                <span class="text-xs text-neutral-400 ml-1"
+                  >({{ getPourcentage(stat.key) }}%)</span
+                >
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

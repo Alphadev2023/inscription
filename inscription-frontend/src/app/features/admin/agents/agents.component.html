@@ -1,0 +1,107 @@
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-neutral-900">Agents</h1>
+      <p class="text-neutral-500 text-sm mt-1">
+        Gestion des agents de traitement
+      </p>
+    </div>
+    <button
+      (click)="chargerAgents()"
+      class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+    >
+      <app-icon name="refresh-cw" [size]="16" />
+      Actualiser
+    </button>
+  </div>
+
+  @if (erreur()) {
+    <div
+      class="flex items-center gap-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg px-4 py-3 text-sm"
+    >
+      <app-icon name="alert-circle" [size]="16" />
+      <span>{{ erreur() }}</span>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <div
+        class="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"
+      ></div>
+    </div>
+  } @else {
+    <div class="card">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-semibold text-neutral-900">
+          Liste des agents
+          <span
+            class="ml-2 text-xs font-medium text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full"
+          >
+            {{ agents().length }}
+          </span>
+        </h2>
+      </div>
+
+      @if (agents().length === 0) {
+        <div
+          class="flex flex-col items-center justify-center py-16 text-center"
+        >
+          <div
+            class="w-14 h-14 bg-neutral-100 rounded-2xl flex items-center justify-center mb-4 text-neutral-400"
+          >
+            <app-icon name="users" [size]="28" />
+          </div>
+          <p class="text-neutral-500 font-medium">Aucun agent enregistré</p>
+          <p class="text-neutral-400 text-sm mt-1">
+            Les agents peuvent s'inscrire via la page d'inscription
+          </p>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          @for (agent of agents(); track agent.id) {
+            <div
+              class="p-4 border border-neutral-200 rounded-xl hover:border-primary-200 hover:shadow-sm transition-all"
+            >
+              <div class="flex items-center gap-3 mb-3">
+                <div
+                  class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="text-sm font-bold text-primary-700">{{
+                    getInitiales(agent.email)
+                  }}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-neutral-900 truncate">
+                    {{ agent.email }}
+                  </p>
+                  <div class="flex items-center gap-1.5 mt-0.5">
+                    <div
+                      [class]="
+                        'w-1.5 h-1.5 rounded-full ' +
+                        (agent.actif ? 'bg-success-500' : 'bg-neutral-300')
+                      "
+                    ></div>
+                    <span class="text-xs text-neutral-500">{{
+                      agent.actif ? "Actif" : "Inactif"
+                    }}</span>
+                  </div>
+                </div>
+                <span
+                  class="text-xs font-medium text-primary-700 bg-primary-50 px-2 py-1 rounded-full"
+                >
+                  Agent
+                </span>
+              </div>
+              <div class="pt-3 border-t border-neutral-100">
+                <p class="text-xs text-neutral-400">
+                  Inscrit le {{ agent.creeLe | date: "dd/MM/yyyy" }}
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

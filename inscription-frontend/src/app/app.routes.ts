@@ -95,6 +95,21 @@ export const routes: Routes = [
             (m) => m.DossierDetailComponent,
           ),
       },
+
+      {
+        path: 'agents',
+        loadComponent: () =>
+          import('./features/admin/agents/agents.component').then(
+            (m) => m.AgentsComponent,
+          ),
+      },
+      {
+        path: 'statistiques',
+        loadComponent: () =>
+          import('./features/admin/statistiques/statistiques.component').then(
+            (m) => m.StatistiquesComponent,
+          ),
+      },
     ],
   },
   {

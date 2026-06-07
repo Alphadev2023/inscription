@@ -5,6 +5,7 @@ import com.inscription.inscription_backend.identity.domain.repository.Utilisateu
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,4 +34,9 @@ public class UtilisateurPersistenceAdapter implements UtilisateurRepository {
     public boolean existeParEmail(String email) {
         return jpaRepository.existsByEmail_Valeur(email);
     }
+    @Override
+    public List<Utilisateur> findAll() {
+        return jpaRepository.findAll();
+    }
+
 }

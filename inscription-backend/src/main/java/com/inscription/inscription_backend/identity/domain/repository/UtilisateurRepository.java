@@ -1,6 +1,8 @@
 package com.inscription.inscription_backend.identity.domain.repository;
 
 import com.inscription.inscription_backend.identity.domain.model.Utilisateur;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,4 +11,5 @@ public interface UtilisateurRepository {
     Optional<Utilisateur> trouverParEmail(String email);
     Optional<Utilisateur> trouverParId(UUID id);
     boolean existeParEmail(String email);
+    List<Utilisateur> findAll();
 }
