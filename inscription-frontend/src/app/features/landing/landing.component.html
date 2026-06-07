@@ -1,0 +1,223 @@
+<div class="min-h-screen">
+  <!-- Navbar -->
+  <nav
+    class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-neutral-100"
+  >
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center"
+          >
+            <app-icon name="shield" [size]="18" class="text-white" />
+          </div>
+          <span class="font-bold text-neutral-900">Inscription</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a
+            routerLink="/login"
+            class="px-4 py-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+          >
+            Se connecter
+          </a>
+          <a
+            routerLink="/register"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            S'inscrire
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section
+    class="pt-32 pb-20 px-4 bg-gradient-to-br from-primary-50 via-white to-primary-50"
+  >
+    <div class="max-w-4xl mx-auto text-center">
+      <div
+        class="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 border border-primary-100 rounded-full text-primary-700 text-sm font-medium mb-8"
+      >
+        <app-icon name="check-circle" [size]="14" />
+        Plateforme d'inscription en ligne
+      </div>
+      <h1
+        class="text-5xl sm:text-6xl font-bold text-neutral-900 mb-6 leading-tight"
+      >
+        Gérez vos inscriptions
+        <span class="text-primary-600"> en toute simplicité</span>
+      </h1>
+      <p
+        class="text-xl text-neutral-600 mb-10 max-w-2xl mx-auto leading-relaxed"
+      >
+        Une plateforme moderne pour soumettre et suivre vos dossiers
+        d'inscription. Simple, rapide et sécurisé.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          routerLink="/register"
+          class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-colors shadow-lg shadow-primary-200"
+        >
+          <app-icon name="arrow-right" [size]="18" />
+          Commencer l'inscription
+        </a>
+        <a
+          routerLink="/login"
+          class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold text-neutral-700 bg-white rounded-xl border border-neutral-200 hover:bg-neutral-50 transition-colors"
+        >
+          <app-icon name="user" [size]="18" />
+          J'ai déjà un compte
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div
+        class="grid grid-cols-3 gap-8 mt-16 pt-16 border-t border-neutral-200"
+      >
+        <div>
+          <p class="text-3xl font-bold text-neutral-900">5</p>
+          <p class="text-sm text-neutral-500 mt-1">Étapes simples</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-neutral-900">48h</p>
+          <p class="text-sm text-neutral-500 mt-1">Délai de traitement</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-neutral-900">100%</p>
+          <p class="text-sm text-neutral-500 mt-1">Sécurisé</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-20 px-4 bg-white">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-neutral-900 mb-4">
+          Tout ce dont vous avez besoin
+        </h2>
+        <p class="text-neutral-500 max-w-xl mx-auto">
+          Une solution complète pour simplifier le processus d'inscription de A
+          à Z.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (feature of features; track feature.title) {
+          <div
+            class="p-6 rounded-2xl border border-neutral-100 hover:border-primary-200 hover:shadow-md transition-all duration-200 group"
+          >
+            <div
+              class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mb-4 text-primary-600 group-hover:bg-primary-100 transition-colors"
+            >
+              <app-icon [name]="feature.icon" [size]="24" />
+            </div>
+            <h3 class="text-base font-semibold text-neutral-900 mb-2">
+              {{ feature.title }}
+            </h3>
+            <p class="text-sm text-neutral-500 leading-relaxed">
+              {{ feature.description }}
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Etapes -->
+  <section class="py-20 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-neutral-900 mb-4">
+          Comment ça marche ?
+        </h2>
+        <p class="text-neutral-500">
+          Un processus simple et guidé en 5 étapes.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        @for (etape of etapes; track etape.numero) {
+          <div
+            class="flex items-start gap-6 p-6 bg-white rounded-2xl border border-neutral-100 hover:border-primary-200 transition-colors"
+          >
+            <div
+              class="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center flex-shrink-0"
+            >
+              <span class="text-white font-bold text-sm">{{
+                etape.numero
+              }}</span>
+            </div>
+            <div>
+              <h3 class="text-base font-semibold text-neutral-900 mb-1">
+                {{ etape.titre }}
+              </h3>
+              <p class="text-sm text-neutral-500">{{ etape.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-20 px-4 bg-primary-600">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl font-bold text-white mb-4">
+        Prêt à commencer votre inscription ?
+      </h2>
+      <p class="text-primary-100 mb-8">
+        Rejoignez des milliers de candidats qui ont simplifié leur démarche
+        d'inscription.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          routerLink="/register"
+          class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold text-primary-600 bg-white rounded-xl hover:bg-neutral-50 transition-colors"
+        >
+          <app-icon name="arrow-right" [size]="18" />
+          Créer mon dossier
+        </a>
+        <a
+          routerLink="/login"
+          class="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold text-white border border-white/30 rounded-xl hover:bg-white/10 transition-colors"
+        >
+          Se connecter
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 px-4 bg-neutral-900">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <div
+            class="w-7 h-7 bg-primary-500 rounded-lg flex items-center justify-center"
+          >
+            <app-icon name="shield" [size]="14" class="text-white" />
+          </div>
+          <span class="font-bold text-white text-sm">Inscription</span>
+        </div>
+        <p class="text-neutral-500 text-sm">
+          © 2026 Plateforme d'Inscription. Tous droits réservés.
+        </p>
+        <div class="flex items-center gap-4">
+          <a
+            routerLink="/login"
+            class="text-neutral-400 hover:text-white text-sm transition-colors"
+            >Connexion</a
+          >
+          <a
+            routerLink="/register"
+            class="text-neutral-400 hover:text-white text-sm transition-colors"
+            >Inscription</a
+          >
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,95 @@
+<div class="relative notification-bell">
+  <!-- Bouton cloche -->
+  <button
+    (click)="toggle()"
+    class="relative w-9 h-9 flex items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700 transition-colors"
+  >
+    <app-icon name="bell" [size]="20" />
+    @if (ws.notifications().length > 0) {
+      <span
+        class="absolute top-1 right-1 w-4 h-4 bg-danger-500 text-white text-xs font-bold rounded-full flex items-center justify-center leading-none"
+      >
+        {{ ws.notifications().length > 9 ? "9+" : ws.notifications().length }}
+      </span>
+    }
+  </button>
+
+  <!-- Dropdown -->
+  @if (ouvert()) {
+    <div
+      class="absolute left-0 top-11 w-80 bg-white rounded-2xl shadow-xl border border-neutral-100 z-50 overflow-hidden"
+    >
+      <!-- Header -->
+      <div
+        class="flex items-center justify-between px-4 py-3 border-b border-neutral-100"
+      >
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-semibold text-neutral-900"
+            >Notifications</span
+          >
+          @if (ws.connecte()) {
+            <span class="w-2 h-2 bg-success-500 rounded-full"></span>
+          } @else {
+            <span class="w-2 h-2 bg-neutral-300 rounded-full"></span>
+          }
+        </div>
+        @if (ws.notifications().length > 0) {
+          <button
+            (click)="ws.toutEffacer()"
+            class="text-xs text-neutral-500 hover:text-neutral-700 transition-colors"
+          >
+            Tout effacer
+          </button>
+        }
+      </div>
+
+      <!-- Liste notifications -->
+      <div class="max-h-80 overflow-y-auto">
+        @if (ws.notifications().length === 0) {
+          <div
+            class="flex flex-col items-center justify-center py-10 text-center"
+          >
+            <div
+              class="w-10 h-10 bg-neutral-100 rounded-xl flex items-center justify-center mb-3 text-neutral-400"
+            >
+              <app-icon name="bell" [size]="20" />
+            </div>
+            <p class="text-sm text-neutral-500">Aucune notification</p>
+            @if (!ws.connecte()) {
+              <p class="text-xs text-neutral-400 mt-1">
+                Non connecté au serveur
+              </p>
+            }
+          </div>
+        } @else {
+          @for (notif of ws.notifications(); track $index) {
+            <div
+              [class]="
+                'flex items-start gap-3 px-4 py-3 border-b border-neutral-50 hover:bg-neutral-50 transition-colors ' +
+                getTypeClass(notif.type)
+              "
+            >
+              <div class="flex-shrink-0 mt-0.5">
+                <app-icon [name]="getTypeIcon(notif.type)" [size]="16" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium leading-snug">
+                  {{ notif.message }}
+                </p>
+                <p class="text-xs opacity-70 mt-0.5">
+                  {{ notif.date | date: "HH:mm" }}
+                </p>
+              </div>
+              <button
+                (click)="ws.marquerCommeLu($index)"
+                class="flex-shrink-0 text-neutral-400 hover:text-neutral-600 transition-colors"
+              >
+                <app-icon name="x" [size]="14" />
+              </button>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

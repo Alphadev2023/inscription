@@ -1,0 +1,40 @@
+<div
+  class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary-50 via-white to-primary-50"
+>
+  <div class="text-center max-w-md">
+    <!-- Illustration -->
+    <div class="relative mb-8">
+      <div class="text-8xl font-black text-neutral-100 select-none">404</div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div
+          class="w-20 h-20 bg-primary-100 rounded-3xl flex items-center justify-center text-primary-600"
+        >
+          <app-icon name="file-text" [size]="40" />
+        </div>
+      </div>
+    </div>
+
+    <h1 class="text-2xl font-bold text-neutral-900 mb-3">Page introuvable</h1>
+    <p class="text-neutral-500 text-sm mb-8 leading-relaxed">
+      La page que vous recherchez n'existe pas ou a été déplacée. Vérifiez l'URL
+      ou retournez à l'accueil.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a
+        routerLink="/"
+        class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+      >
+        <app-icon name="home" [size]="16" />
+        Retour à l'accueil
+      </a>
+      <a
+        routerLink="/login"
+        class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+      >
+        <app-icon name="user" [size]="16" />
+        Se connecter
+      </a>
+    </div>
+  </div>
+</div>

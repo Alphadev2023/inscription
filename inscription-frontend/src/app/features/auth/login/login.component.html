@@ -1,0 +1,125 @@
+<div
+  class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary-50 via-white to-primary-50"
+>
+  <div class="w-full max-w-md">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div
+        class="w-14 h-14 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white"
+      >
+        <app-icon name="shield" [size]="28" />
+      </div>
+      <h1 class="text-3xl font-bold text-neutral-900 mb-1">
+        Plateforme d'Inscription
+      </h1>
+      <p class="text-neutral-500 text-sm">Connectez-vous à votre espace</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-lg border border-neutral-100 p-8">
+      <!-- Erreur -->
+      @if (errorMessage()) {
+        <div
+          class="flex items-center gap-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg px-4 py-3 mb-6 text-sm"
+        >
+          <app-icon name="alert-circle" [size]="16" />
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- Email -->
+        <!-- Email -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+            Adresse email
+          </label>
+          <div class="relative">
+            <div
+              class="absolute left-3 top-0 bottom-0 flex items-center text-neutral-400 pointer-events-none"
+            >
+              <app-icon name="mail" [size]="16" />
+            </div>
+            <input
+              formControlName="email"
+              type="email"
+              placeholder="vous@exemple.com"
+              class="input-field pl-9"
+              [class.input-error]="isInvalid('email')"
+            />
+          </div>
+          @if (isInvalid("email")) {
+            <p class="text-xs text-danger-500 mt-1">Adresse email invalide</p>
+          }
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+            Mot de passe
+          </label>
+          <div class="relative">
+            <div
+              class="absolute left-3 top-0 bottom-0 flex items-center text-neutral-400 pointer-events-none"
+            >
+              <app-icon name="lock" [size]="16" />
+            </div>
+            <input
+              formControlName="motDePasse"
+              [type]="showPassword() ? 'text' : 'password'"
+              placeholder="••••••••"
+              class="input-field pl-9 pr-10"
+              [class.input-error]="isInvalid('motDePasse')"
+            />
+            <div class="absolute right-3 top-0 bottom-0 flex items-center">
+              <button
+                type="button"
+                (click)="showPassword.set(!showPassword())"
+                class="text-neutral-400 hover:text-neutral-600 transition-colors"
+              >
+                <app-icon
+                  [name]="showPassword() ? 'eye-off' : 'eye'"
+                  [size]="16"
+                />
+              </button>
+            </div>
+          </div>
+          @if (isInvalid("motDePasse")) {
+            <p class="text-xs text-danger-500 mt-1">Minimum 6 caractères</p>
+          }
+        </div>
+
+        <!-- Bouton Submit -->
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          @if (loading()) {
+            <span
+              class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block"
+            ></span>
+            <span>Connexion en cours...</span>
+          } @else {
+            <span>Se connecter</span>
+          }
+        </button>
+      </form>
+
+      <!-- Register -->
+      <p class="text-center mt-6 text-sm text-neutral-500">
+        Pas encore de compte ?
+        <a
+          routerLink="/register"
+          class="text-primary-600 font-medium hover:underline"
+        >
+          S'inscrire
+        </a>
+      </p>
+    </div>
+
+    <p class="text-center mt-6 text-xs text-neutral-400">
+      © 2026 Plateforme d'Inscription. Tous droits réservés.
+    </p>
+  </div>
+</div>

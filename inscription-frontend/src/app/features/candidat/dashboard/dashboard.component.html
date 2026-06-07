@@ -1,0 +1,242 @@
+<div class="space-y-6">
+  <!-- En-tête -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-neutral-900">
+        Bonjour, {{ getPrenomUser() }}
+      </h1>
+      <p class="text-neutral-500 text-sm mt-1">
+        Bienvenue sur votre espace candidat
+      </p>
+    </div>
+    @if (!dossier() && !loading()) {
+      <a
+        routerLink="/candidat/inscription"
+        class="btn-primary flex items-center gap-2"
+      >
+        <app-icon name="plus" [size]="16" />
+        Créer mon dossier
+      </a>
+    }
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <div
+        class="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"
+      ></div>
+    </div>
+  }
+
+  <!-- Pas de dossier -->
+  @if (!loading() && !dossier()) {
+    <div
+      class="card flex flex-col items-center justify-center py-16 text-center"
+    >
+      <div
+        class="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center mb-4 text-primary-600"
+      >
+        <app-icon name="file-text" [size]="32" />
+      </div>
+      <h2 class="text-xl font-semibold text-neutral-900 mb-2">
+        Aucun dossier créé
+      </h2>
+      <p class="text-neutral-500 text-sm mb-6 max-w-sm">
+        Commencez votre inscription en créant votre dossier. Le processus prend
+        environ 15 minutes.
+      </p>
+      <a
+        routerLink="/candidat/inscription"
+        class="btn-primary flex items-center gap-2"
+      >
+        <app-icon name="plus" [size]="16" />
+        Commencer l'inscription
+      </a>
+    </div>
+  }
+
+  <!-- Dossier existant -->
+  @if (!loading() && dossier()) {
+    <!-- Cartes stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="card">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-sm font-medium text-neutral-500">Statut du dossier</p>
+          <div
+            class="w-9 h-9 bg-primary-50 rounded-lg flex items-center justify-center text-primary-600"
+          >
+            <app-icon name="file-text" [size]="18" />
+          </div>
+        </div>
+        <span
+          [class]="
+            'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ' +
+            getStatutColor()
+          "
+        >
+          {{ getStatutLabel() }}
+        </span>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-sm font-medium text-neutral-500">Complétion</p>
+          <div
+            class="w-9 h-9 bg-success-50 rounded-lg flex items-center justify-center text-success-700"
+          >
+            <app-icon name="check-circle" [size]="18" />
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-neutral-900">
+          {{ dossier()?.scoreCompletude }}%
+        </p>
+        <div class="mt-2 h-1.5 bg-neutral-100 rounded-full overflow-hidden">
+          <div
+            class="h-full rounded-full transition-all duration-500"
+            [class]="getProgressColor()"
+            [style.width]="getProgressWidth()"
+          ></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-sm font-medium text-neutral-500">Etape actuelle</p>
+          <div
+            class="w-9 h-9 bg-warning-50 rounded-lg flex items-center justify-center text-warning-700"
+          >
+            <app-icon name="clock" [size]="18" />
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-neutral-900">
+          {{ dossier()?.etapeActuelle }}/5
+        </p>
+        <p class="text-xs text-neutral-500 mt-1">
+          {{ etapes[(dossier()?.etapeActuelle ?? 1) - 1].label }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Progression -->
+    <div class="card">
+      <h2 class="text-lg font-semibold text-neutral-900 mb-6">
+        Progression de votre dossier
+      </h2>
+      <div class="space-y-4">
+        @for (etape of etapes; track $index) {
+          <div class="flex items-center gap-4">
+            <div
+              [class]="
+                'w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold transition-all ' +
+                (dossier()!.statut === 'VALIDE' ||
+                dossier()!.statut === 'REJETE'
+                  ? 'bg-success-500 text-white'
+                  : $index < (dossier()?.etapeActuelle ?? 0) - 1
+                    ? 'bg-success-500 text-white'
+                    : $index === (dossier()?.etapeActuelle ?? 1) - 1
+                      ? 'bg-primary-600 text-white ring-4 ring-primary-100'
+                      : 'bg-neutral-100 text-neutral-400')
+              "
+            >
+              @if (
+                dossier()!.statut === "VALIDE" ||
+                $index < (dossier()?.etapeActuelle ?? 0) - 1
+              ) {
+                <app-icon name="check" [size]="16" />
+              } @else {
+                {{ $index + 1 }}
+              }
+            </div>
+            <div class="flex-1">
+              <p
+                [class]="
+                  'text-sm font-medium ' +
+                  ($index <= (dossier()?.etapeActuelle ?? 1) - 1
+                    ? 'text-neutral-900'
+                    : 'text-neutral-400')
+                "
+              >
+                {{ etape.label }}
+              </p>
+              <p class="text-xs text-neutral-500">{{ etape.description }}</p>
+            </div>
+            @if (dossier()!.statut === "VALIDE") {
+              <span
+                class="text-xs font-medium text-success-700 bg-success-50 px-2.5 py-1 rounded-full"
+                >Complété</span
+              >
+            } @else if ($index < (dossier()?.etapeActuelle ?? 0) - 1) {
+              <span
+                class="text-xs font-medium text-success-700 bg-success-50 px-2.5 py-1 rounded-full"
+                >Complété</span
+              >
+            } @else if ($index === (dossier()?.etapeActuelle ?? 1) - 1) {
+              <span
+                class="text-xs font-medium text-primary-700 bg-primary-50 px-2.5 py-1 rounded-full"
+                >En cours</span
+              >
+            } @else {
+              <span
+                class="text-xs font-medium text-neutral-400 bg-neutral-100 px-2.5 py-1 rounded-full"
+                >A venir</span
+              >
+            }
+          </div>
+          @if ($index < etapes.length - 1) {
+            <div class="ml-4 w-0.5 h-4 bg-neutral-200"></div>
+          }
+        }
+      </div>
+
+      @if (dossier()?.statut === "BROUILLON") {
+        <div class="mt-6 pt-6 border-t border-neutral-100">
+          <a
+            routerLink="/candidat/inscription"
+            class="btn-primary w-full justify-center flex items-center gap-2"
+          >
+            <app-icon name="arrow-right" [size]="16" />
+            Continuer mon inscription
+          </a>
+        </div>
+      }
+    </div>
+
+    <!-- Dates -->
+    <div class="card">
+      <h2 class="text-lg font-semibold text-neutral-900 mb-4">
+        Informations du dossier
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 bg-neutral-50 rounded-lg flex items-center justify-center text-neutral-500"
+          >
+            <app-icon name="calendar" [size]="16" />
+          </div>
+          <div>
+            <p class="text-xs text-neutral-500">Créé le</p>
+            <p class="text-sm font-medium text-neutral-900">
+              {{ dossier()?.creeLe | date: "dd/MM/yyyy à HH:mm" }}
+            </p>
+          </div>
+        </div>
+        @if (dossier()?.soumisLe) {
+          <div class="flex items-center gap-3">
+            <div
+              class="w-9 h-9 bg-success-50 rounded-lg flex items-center justify-center text-success-700"
+            >
+              <app-icon name="check-circle" [size]="16" />
+            </div>
+            <div>
+              <p class="text-xs text-neutral-500">Soumis le</p>
+              <p class="text-sm font-medium text-neutral-900">
+                {{ dossier()?.soumisLe | date: "dd/MM/yyyy à HH:mm" }}
+              </p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

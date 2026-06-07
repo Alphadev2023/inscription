@@ -1,0 +1,286 @@
+<div class="space-y-6">
+  <!-- En-tête -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-neutral-900">Mon dossier</h1>
+      <p class="text-neutral-500 text-sm mt-1">
+        Consultez et gérez votre dossier d'inscription
+      </p>
+    </div>
+    @if (dossier()?.statut === "BROUILLON") {
+      <a
+        routerLink="/candidat/inscription"
+        class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+      >
+        <app-icon name="arrow-right" [size]="16" />
+        Continuer l'inscription
+      </a>
+    }
+  </div>
+
+  <!-- Erreur -->
+  @if (erreur()) {
+    <div
+      class="flex items-center gap-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg px-4 py-3 text-sm"
+    >
+      <app-icon name="alert-circle" [size]="16" />
+      <span>{{ erreur() }}</span>
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <div
+        class="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"
+      ></div>
+    </div>
+  }
+
+  <!-- Pas de dossier -->
+  @if (!loading() && !dossier()) {
+    <div
+      class="card flex flex-col items-center justify-center py-16 text-center"
+    >
+      <div
+        class="w-16 h-16 bg-primary-50 rounded-2xl flex items-center justify-center mb-4 text-primary-600"
+      >
+        <app-icon name="file-text" [size]="32" />
+      </div>
+      <h2 class="text-xl font-semibold text-neutral-900 mb-2">
+        Aucun dossier créé
+      </h2>
+      <p class="text-neutral-500 text-sm mb-6">
+        Commencez votre inscription pour créer votre dossier.
+      </p>
+      <a
+        routerLink="/candidat/inscription"
+        class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+      >
+        <app-icon name="plus" [size]="16" />
+        Commencer l'inscription
+      </a>
+    </div>
+  }
+
+  @if (!loading() && dossier()) {
+    <!-- Statut dossier -->
+    <div class="card">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
+        <div class="flex items-center gap-4">
+          <div
+            class="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center flex-shrink-0"
+          >
+            <app-icon name="file-text" [size]="24" class="text-primary-600" />
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-neutral-900">
+              Dossier d'inscription
+            </h2>
+            <div class="flex items-center gap-3 mt-1">
+              <span
+                [class]="
+                  'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' +
+                  getStatutClass(dossier()!.statut)
+                "
+              >
+                {{ getStatutLabel(dossier()!.statut) }}
+              </span>
+              <span class="text-sm text-neutral-500"
+                >Etape {{ dossier()!.etapeActuelle }}/5</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Complétion -->
+        <div class="sm:text-right">
+          <p class="text-3xl font-bold text-neutral-900">
+            {{ dossier()!.scoreCompletude }}%
+          </p>
+          <p class="text-xs text-neutral-500 mt-0.5">Complétion du dossier</p>
+          <div
+            class="mt-2 w-32 h-1.5 bg-neutral-100 rounded-full overflow-hidden sm:ml-auto"
+          >
+            <div
+              class="h-full rounded-full bg-primary-500"
+              [style.width.%]="dossier()!.scoreCompletude"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div
+        class="mt-6 pt-6 border-t border-neutral-100 grid grid-cols-1 sm:grid-cols-3 gap-4"
+      >
+        <div>
+          <p class="text-xs text-neutral-500">ID Dossier</p>
+          <p class="text-xs font-mono text-neutral-700 mt-0.5 truncate">
+            {{ dossier()!.id }}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs text-neutral-500">Créé le</p>
+          <p class="text-sm font-medium text-neutral-900 mt-0.5">
+            {{ dossier()!.creeLe | date: "dd/MM/yyyy à HH:mm" }}
+          </p>
+        </div>
+        @if (dossier()!.soumisLe) {
+          <div>
+            <p class="text-xs text-neutral-500">Soumis le</p>
+            <p class="text-sm font-medium text-neutral-900 mt-0.5">
+              {{ dossier()!.soumisLe | date: "dd/MM/yyyy à HH:mm" }}
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Alerte dossier validé -->
+    @if (dossier()!.statut === "VALIDE") {
+      <div
+        class="flex items-start gap-3 bg-success-50 border border-success-200 rounded-xl px-4 py-4"
+      >
+        <app-icon
+          name="check-circle"
+          [size]="20"
+          class="text-success-600 flex-shrink-0 mt-0.5"
+        />
+        <div>
+          <p class="text-sm font-semibold text-success-700">Dossier validé</p>
+          <p class="text-sm text-success-600 mt-0.5">
+            Félicitations ! Votre dossier a été validé par notre équipe. Vous
+            serez contacté prochainement.
+          </p>
+        </div>
+      </div>
+    }
+
+    <!-- Alerte dossier rejeté -->
+    @if (dossier()!.statut === "REJETE") {
+      <div
+        class="flex items-start gap-3 bg-danger-50 border border-danger-200 rounded-xl px-4 py-4"
+      >
+        <app-icon
+          name="x-circle"
+          [size]="20"
+          class="text-danger-600 flex-shrink-0 mt-0.5"
+        />
+        <div>
+          <p class="text-sm font-semibold text-danger-700">Dossier rejeté</p>
+          <p class="text-sm text-danger-600 mt-0.5">
+            Votre dossier a été rejeté. Veuillez contacter l'administration pour
+            plus d'informations.
+          </p>
+        </div>
+      </div>
+    }
+
+    <!-- Documents -->
+    <!-- Documents -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-semibold text-neutral-900">
+          Documents
+          <span
+            class="ml-2 text-xs font-medium text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full"
+          >
+            {{ documents().length }}/{{ typesDocuments.length }}
+          </span>
+        </h2>
+        @if (peutModifier()) {
+          <p class="text-xs text-neutral-500">
+            Cliquez sur "Choisir" pour uploader un document
+          </p>
+        }
+      </div>
+
+      <div class="space-y-3">
+        @for (typeDoc of typesDocuments; track typeDoc.type) {
+          <div
+            class="flex items-center justify-between p-4 border border-neutral-200 rounded-xl hover:border-neutral-300 transition-colors"
+          >
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+              <div [class]="getDocIconClass(typeDoc.type)">
+                <app-icon [name]="getDocIcon(typeDoc.type)" [size]="20" />
+              </div>
+
+              <div class="min-w-0">
+                <p class="text-sm font-medium text-neutral-900">
+                  {{ typeDoc.label }}
+                </p>
+                @if (getDocumentParType(typeDoc.type)) {
+                  <p class="text-xs text-neutral-500 truncate">
+                    {{ getDocumentParType(typeDoc.type)!.nomFichierOriginal }} —
+                    {{ formatTaille(getDocumentParType(typeDoc.type)!.taille) }}
+                  </p>
+                } @else {
+                  <p class="text-xs text-neutral-400">
+                    {{ typeDoc.description }}
+                  </p>
+                }
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 flex-shrink-0">
+              @if (getDocumentParType(typeDoc.type)) {
+                <span
+                  [class]="
+                    'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' +
+                    getDocStatutClass(getDocumentParType(typeDoc.type)!.statut)
+                  "
+                >
+                  {{
+                    getDocStatutLabel(getDocumentParType(typeDoc.type)!.statut)
+                  }}
+                </span>
+              }
+              @if (peutModifier()) {
+                <label class="cursor-pointer">
+                  <input
+                    type="file"
+                    accept="application/pdf,image/jpeg,image/png"
+                    class="hidden"
+                    (change)="onUpload($event, typeDoc.type)"
+                  />
+                  <span
+                    class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors cursor-pointer"
+                  >
+                    <app-icon name="upload" [size]="12" />
+                    {{
+                      getDocumentParType(typeDoc.type) ? "Remplacer" : "Choisir"
+                    }}
+                  </span>
+                </label>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Informations candidat -->
+    <div class="card">
+      <h2 class="text-lg font-semibold text-neutral-900 mb-4">
+        Informations du candidat
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-3 bg-neutral-50 rounded-lg">
+          <p class="text-xs text-neutral-500 mb-0.5">Nom</p>
+          <p class="text-sm font-medium text-neutral-900">
+            {{ dossier()!.nomCandidat }}
+          </p>
+        </div>
+        <div class="p-3 bg-neutral-50 rounded-lg">
+          <p class="text-xs text-neutral-500 mb-0.5">Prénom</p>
+          <p class="text-sm font-medium text-neutral-900">
+            {{ dossier()!.prenomCandidat }}
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

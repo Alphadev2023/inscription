@@ -1,0 +1,171 @@
+<div
+  class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-primary-50 via-white to-primary-50"
+>
+  <div class="w-full max-w-md">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div
+        class="w-14 h-14 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white"
+      >
+        <app-icon name="user" [size]="28" />
+      </div>
+      <h1 class="text-3xl font-bold text-neutral-900 mb-1">Créer un compte</h1>
+      <p class="text-neutral-500 text-sm">
+        Rejoignez la plateforme d'inscription
+      </p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-lg border border-neutral-100 p-8">
+      <!-- Erreur -->
+      @if (errorMessage()) {
+        <div
+          class="flex items-center gap-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg px-4 py-3 mb-6 text-sm"
+        >
+          <app-icon name="alert-circle" [size]="16" />
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- Email -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+            Adresse email
+          </label>
+          <div class="relative">
+            <div
+              class="absolute left-3 top-0 bottom-0 flex items-center text-neutral-400 pointer-events-none"
+            >
+              <app-icon name="mail" [size]="16" />
+            </div>
+            <input
+              formControlName="email"
+              type="email"
+              placeholder="vous@exemple.com"
+              class="w-full pl-9 pr-3 py-2.5 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              [class.border-danger-500]="isInvalid('email')"
+            />
+          </div>
+          @if (isInvalid("email")) {
+            <p class="text-xs text-danger-500 mt-1">Adresse email invalide</p>
+          }
+        </div>
+
+        <!-- Mot de passe -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+            Mot de passe
+          </label>
+          <div class="relative">
+            <div
+              class="absolute left-3 top-0 bottom-0 flex items-center text-neutral-400 pointer-events-none"
+            >
+              <app-icon name="lock" [size]="16" />
+            </div>
+            <input
+              formControlName="motDePasse"
+              [type]="showPassword() ? 'text' : 'password'"
+              placeholder="Minimum 8 caractères"
+              class="w-full pl-9 pr-10 py-2.5 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              [class.border-danger-500]="isInvalid('motDePasse')"
+            />
+            <div class="absolute right-3 top-0 bottom-0 flex items-center">
+              <button
+                type="button"
+                (click)="showPassword.set(!showPassword())"
+                class="text-neutral-400 hover:text-neutral-600 transition-colors"
+              >
+                <app-icon
+                  [name]="showPassword() ? 'eye-off' : 'eye'"
+                  [size]="16"
+                />
+              </button>
+            </div>
+          </div>
+          @if (isInvalid("motDePasse")) {
+            <p class="text-xs text-danger-500 mt-1">
+              Minimum 8 caractères requis
+            </p>
+          }
+        </div>
+
+        <!-- Rôle -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+            Je suis
+          </label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="relative cursor-pointer">
+              <input
+                type="radio"
+                formControlName="role"
+                value="CANDIDAT"
+                class="sr-only peer"
+              />
+              <div
+                class="flex flex-col items-center gap-2 p-4 border-2 border-neutral-200 rounded-xl peer-checked:border-primary-500 peer-checked:bg-primary-50 transition-all"
+              >
+                <app-icon name="user" [size]="24" />
+                <span class="text-sm font-medium text-neutral-700"
+                  >Candidat</span
+                >
+                <span class="text-xs text-neutral-500 text-center"
+                  >Je souhaite m'inscrire</span
+                >
+              </div>
+            </label>
+            <label class="relative cursor-pointer">
+              <input
+                type="radio"
+                formControlName="role"
+                value="AGENT"
+                class="sr-only peer"
+              />
+              <div
+                class="flex flex-col items-center gap-2 p-4 border-2 border-neutral-200 rounded-xl peer-checked:border-primary-500 peer-checked:bg-primary-50 transition-all"
+              >
+                <app-icon name="shield" [size]="24" />
+                <span class="text-sm font-medium text-neutral-700">Agent</span>
+                <span class="text-xs text-neutral-500 text-center"
+                  >Je traite les dossiers</span
+                >
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="loading()"
+          class="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-150 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          @if (loading()) {
+            <span
+              class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block"
+            ></span>
+            <span>Création en cours...</span>
+          } @else {
+            <span>Créer mon compte</span>
+          }
+        </button>
+      </form>
+
+      <!-- Login -->
+      <p class="text-center mt-6 text-sm text-neutral-500">
+        Déjà un compte ?
+        <a
+          routerLink="/login"
+          class="text-primary-600 font-medium hover:underline"
+        >
+          Se connecter
+        </a>
+      </p>
+    </div>
+
+    <p class="text-center mt-6 text-xs text-neutral-400">
+      © 2026 Plateforme d'Inscription. Tous droits réservés.
+    </p>
+  </div>
+</div>

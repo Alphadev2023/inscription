@@ -1,0 +1,383 @@
+<div class="space-y-6">
+  <!-- En-tête -->
+  <div class="flex items-center gap-4">
+    <button
+      (click)="retourListe()"
+      class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+    >
+      <app-icon name="arrow-left" [size]="16" />
+      Retour
+    </button>
+    <div class="flex-1">
+      <h1 class="text-2xl font-bold text-neutral-900">Détail du dossier</h1>
+    </div>
+  </div>
+
+  <!-- Erreur -->
+  @if (erreur()) {
+    <div
+      class="flex items-center gap-2 bg-danger-50 border border-danger-200 text-danger-700 rounded-lg px-4 py-3 text-sm"
+    >
+      <app-icon name="alert-circle" [size]="16" />
+      <span>{{ erreur() }}</span>
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <div
+        class="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin"
+      ></div>
+    </div>
+  }
+
+  @if (!loading() && dossier()) {
+    <!-- Infos candidat + statut -->
+    <div class="card">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+      >
+        <!-- Identité -->
+        <div class="flex items-center gap-4">
+          <div
+            class="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center flex-shrink-0"
+          >
+            <span class="text-xl font-bold text-primary-700">
+              {{ dossier()!.nomCandidat.charAt(0)
+              }}{{ dossier()!.prenomCandidat.charAt(0) }}
+            </span>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-neutral-900">
+              {{ dossier()!.nomCandidat }} {{ dossier()!.prenomCandidat }}
+            </h2>
+            <div class="flex items-center gap-3 mt-1">
+              <span
+                [class]="
+                  'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' +
+                  getStatutClass(dossier()!.statut)
+                "
+              >
+                {{ getStatutLabel(dossier()!.statut) }}
+              </span>
+              <span class="text-sm text-neutral-500">
+                Complétion : {{ dossier()!.scoreCompletude }}%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3">
+          @if (peutValider()) {
+            <button
+              (click)="valider()"
+              [disabled]="actionLoading()"
+              class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-success-500 rounded-lg hover:bg-success-700 transition-colors disabled:opacity-60"
+            >
+              @if (actionLoading()) {
+                <span
+                  class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                ></span>
+              } @else {
+                <app-icon name="check-circle" [size]="16" />
+              }
+              Valider
+            </button>
+          }
+          @if (peutRejeter()) {
+            <button
+              (click)="ouvrirModalRejet()"
+              [disabled]="actionLoading()"
+              class="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-danger-500 rounded-lg hover:bg-danger-700 transition-colors disabled:opacity-60"
+            >
+              <app-icon name="x-circle" [size]="16" />
+              Rejeter
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Infos dossier -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <!-- Informations générales -->
+      <div class="card">
+        <h3 class="text-base font-semibold text-neutral-900 mb-4">
+          Informations générales
+        </h3>
+        <div class="space-y-3">
+          <div class="flex justify-between text-sm">
+            <span class="text-neutral-500">ID Dossier</span>
+            <span
+              class="font-mono text-xs text-neutral-700 truncate max-w-40"
+              >{{ dossier()!.id }}</span
+            >
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-neutral-500">Etape actuelle</span>
+            <span class="font-medium text-neutral-900"
+              >{{ dossier()!.etapeActuelle }}/5</span
+            >
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-neutral-500">Créé le</span>
+            <span class="font-medium text-neutral-900">{{
+              dossier()!.creeLe | date: "dd/MM/yyyy HH:mm"
+            }}</span>
+          </div>
+          @if (dossier()!.soumisLe) {
+            <div class="flex justify-between text-sm">
+              <span class="text-neutral-500">Soumis le</span>
+              <span class="font-medium text-neutral-900">{{
+                dossier()!.soumisLe | date: "dd/MM/yyyy HH:mm"
+              }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Progression -->
+      <!-- Complétion du dossier -->
+      <div class="card">
+        <h3 class="text-base font-semibold text-neutral-900 mb-4">
+          Complétion du dossier
+        </h3>
+
+        @if (dossier()!.statut === "VALIDE") {
+          <div
+            class="flex items-center gap-3 p-3 bg-success-50 rounded-xl mb-4"
+          >
+            <app-icon
+              name="check-circle"
+              [size]="20"
+              class="text-success-600"
+            />
+            <p class="text-sm font-medium text-success-700">
+              Dossier validé — traitement terminé
+            </p>
+          </div>
+        }
+
+        <div class="flex items-center gap-4 mb-4">
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-500"
+              [class]="
+                dossier()!.statut === 'VALIDE'
+                  ? 'bg-success-500'
+                  : 'bg-primary-500'
+              "
+              [style.width.%]="
+                dossier()!.statut === 'VALIDE'
+                  ? 100
+                  : dossier()!.scoreCompletude
+              "
+            ></div>
+          </div>
+          <span class="text-2xl font-bold text-neutral-900">
+            {{
+              dossier()!.statut === "VALIDE"
+                ? "100"
+                : dossier()!.scoreCompletude
+            }}%
+          </span>
+        </div>
+
+        <div class="grid grid-cols-5 gap-1">
+          @for (i of [1, 2, 3, 4, 5]; track i) {
+            <div
+              [class]="
+                'h-2 rounded-full ' +
+                (dossier()!.statut === 'VALIDE'
+                  ? 'bg-success-500'
+                  : i <= dossier()!.etapeActuelle
+                    ? 'bg-primary-500'
+                    : 'bg-neutral-200')
+              "
+            ></div>
+          }
+        </div>
+        <p class="text-xs text-neutral-500 mt-2">
+          @if (dossier()!.statut === "VALIDE") {
+            Toutes les étapes complétées
+          } @else {
+            Etape {{ dossier()!.etapeActuelle }} sur 5 complétée
+          }
+        </p>
+      </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="card">
+      <h3 class="text-base font-semibold text-neutral-900 mb-4">
+        Documents soumis
+        <span
+          class="ml-2 text-xs font-medium text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full"
+        >
+          {{ documents().length }}
+        </span>
+      </h3>
+
+      @if (documents().length === 0) {
+        <div
+          class="flex flex-col items-center justify-center py-10 text-center"
+        >
+          <div
+            class="w-12 h-12 bg-neutral-100 rounded-xl flex items-center justify-center mb-3 text-neutral-400"
+          >
+            <app-icon name="file" [size]="24" />
+          </div>
+          <p class="text-sm text-neutral-500">Aucun document soumis</p>
+        </div>
+      } @else {
+        <div class="space-y-3">
+          @for (doc of documents(); track doc.id) {
+            <div
+              class="flex items-center justify-between p-4 bg-neutral-50 rounded-xl border border-neutral-100"
+            >
+              <!-- Info document -->
+              <div class="flex items-center gap-3 flex-1 min-w-0">
+                <div
+                  [class]="
+                    'w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ' +
+                    (doc.statut === 'VALIDE'
+                      ? 'bg-success-50 text-success-600'
+                      : doc.statut === 'REJETE'
+                        ? 'bg-danger-50 text-danger-600'
+                        : 'bg-primary-50 text-primary-600')
+                  "
+                >
+                  <app-icon name="file-text" [size]="20" />
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-neutral-900">
+                    {{ getDocTypeLabel(doc.type) }}
+                  </p>
+                  <p class="text-xs text-neutral-500 truncate">
+                    {{ doc.nomFichierOriginal }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Statut + Actions -->
+              <div class="flex items-center gap-3 flex-shrink-0">
+                <span
+                  [class]="
+                    'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' +
+                    getDocStatutClass(doc.statut)
+                  "
+                >
+                  {{
+                    doc.statut === "EN_ATTENTE"
+                      ? "En attente"
+                      : doc.statut === "VALIDE"
+                        ? "Validé"
+                        : doc.statut === "REJETE"
+                          ? "Rejeté"
+                          : "Suspect"
+                  }}
+                </span>
+
+                <!-- Bouton Voir -->
+                <button
+                  (click)="voirDocument(doc.id)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+                >
+                  <app-icon name="eye" [size]="12" />
+                  Voir
+                </button>
+
+                @if (doc.statut === "EN_ATTENTE") {
+                  <button
+                    (click)="validerDocument(doc.id, true)"
+                    class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-success-500 rounded-lg hover:bg-success-700 transition-colors"
+                  >
+                    <app-icon name="check" [size]="12" />
+                    Valider
+                  </button>
+                  <button
+                    (click)="validerDocument(doc.id, false)"
+                    class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-danger-500 rounded-lg hover:bg-danger-700 transition-colors"
+                  >
+                    <app-icon name="x" [size]="12" />
+                    Rejeter
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Modal Rejet -->
+@if (showRejetModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+      (click)="fermerModalRejet()"
+    ></div>
+    <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-neutral-900">
+          Rejeter le dossier
+        </h3>
+        <button
+          (click)="fermerModalRejet()"
+          class="text-neutral-400 hover:text-neutral-600"
+        >
+          <app-icon name="x" [size]="20" />
+        </button>
+      </div>
+
+      <p class="text-sm text-neutral-600 mb-4">
+        Veuillez indiquer la raison du rejet. Le candidat sera notifié avec
+        cette explication.
+      </p>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+          Raison du rejet *
+        </label>
+        <textarea
+          [formControl]="raisonRejet"
+          rows="4"
+          placeholder="Expliquez pourquoi le dossier est rejeté..."
+          class="w-full px-3 py-2.5 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-danger-500 focus:border-transparent resize-none"
+          [class.border-danger-500]="raisonRejet.invalid && raisonRejet.touched"
+        >
+        </textarea>
+        @if (raisonRejet.invalid && raisonRejet.touched) {
+          <p class="text-xs text-danger-500 mt-1">
+            Minimum 10 caractères requis
+          </p>
+        }
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button
+          (click)="fermerModalRejet()"
+          class="flex-1 px-4 py-2.5 text-sm font-medium text-neutral-600 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
+        >
+          Annuler
+        </button>
+        <button
+          (click)="confirmerRejet()"
+          [disabled]="raisonRejet.invalid || actionLoading()"
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-danger-500 rounded-lg hover:bg-danger-700 transition-colors disabled:opacity-60"
+        >
+          @if (actionLoading()) {
+            <span
+              class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+            ></span>
+          }
+          Confirmer le rejet
+        </button>
+      </div>
+    </div>
+  </div>
+}
