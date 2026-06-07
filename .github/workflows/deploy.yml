@@ -57,32 +57,33 @@ jobs:
 
   # ── Build Frontend ─────────────────────────────────────────
   build-frontend:
-    name: Build Frontend
-    runs-on: ubuntu-latest
+  name: Build Frontend
+  runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+  steps:
+    - uses: actions/checkout@v4
 
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-          cache-dependency-path: inscription-frontend/package-lock.json
+    - name: Setup Node 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+        # Retire le cache si package-lock.json n'existe pas
+        # cache: 'npm'
+        # cache-dependency-path: inscription-frontend/package-lock.json
 
-      - name: Install dependencies
-        working-directory: inscription-frontend
-        run: npm ci
+    - name: Install dependencies
+      working-directory: inscription-frontend
+      run: npm ci
 
-      - name: Build
-        working-directory: inscription-frontend
-        run: npm run build
+    - name: Build
+      working-directory: inscription-frontend
+      run: npm run build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-build
-          path: inscription-frontend/dist/
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-build
+        path: inscription-frontend/dist/
 
   # ── Deploy ─────────────────────────────────────────────────
   deploy:
