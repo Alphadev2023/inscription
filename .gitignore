@@ -1,0 +1,22 @@
+# Backend
+inscription-backend/target/
+inscription-backend/.mvn/
+inscription-backend/*.log
+inscription-backend/uploads/
+
+# Frontend
+inscription-frontend/node_modules/
+inscription-frontend/dist/
+inscription-frontend/.angular/
+
+# Docker
+.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
