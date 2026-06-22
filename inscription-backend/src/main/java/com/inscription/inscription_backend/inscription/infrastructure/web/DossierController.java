@@ -1,5 +1,6 @@
 package com.inscription.inscription_backend.inscription.infrastructure.web;
 
+import com.inscription.inscription_backend.document.domain.repository.DocumentRepository;
 import com.inscription.inscription_backend.inscription.application.command.*;
 import com.inscription.inscription_backend.inscription.application.service.DossierService;
 import com.inscription.inscription_backend.inscription.domain.model.StatutDossier;
@@ -23,8 +24,7 @@ import java.util.stream.Collectors;
 public class DossierController {
 
     private final DossierService dossierService;
-
-    // ── Candidat ────────────────────────────────────────────
+    private final DocumentRepository documentRepository;
 
     @PostMapping
     @PreAuthorize("hasRole('CANDIDAT')")
@@ -45,9 +45,9 @@ public class DossierController {
     @PreAuthorize("hasRole('CANDIDAT')")
     public ResponseEntity<DossierResponse> monDossier(
             @AuthenticationPrincipal String utilisateurId) {
-
         var dossier = dossierService.trouverParUtilisateur(UUID.fromString(utilisateurId));
-        return ResponseEntity.ok(DossierResponse.depuis(dossier));
+        var docs = documentRepository.trouverParDossierId(dossier.getId());
+        return ResponseEntity.ok(DossierResponse.depuis(dossier, docs));
     }
 
     @PostMapping("/{id}/soumettre")
@@ -57,17 +57,13 @@ public class DossierController {
         return ResponseEntity.ok(DossierResponse.depuis(dossier));
     }
 
-    // ── Agent / Admin ────────────────────────────────────────
-
     @GetMapping
     @PreAuthorize("hasAnyRole('AGENT', 'ADMIN')")
     public ResponseEntity<List<DossierSummaryResponse>> listerTous(
             @RequestParam(required = false) StatutDossier statut) {
-
         var dossiers = statut != null
                 ? dossierService.trouverParStatut(statut)
                 : dossierService.trouverTous();
-
         return ResponseEntity.ok(dossiers.stream()
                 .map(DossierSummaryResponse::depuis)
                 .collect(Collectors.toList()));
@@ -76,7 +72,9 @@ public class DossierController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('AGENT', 'ADMIN')")
     public ResponseEntity<DossierResponse> trouverParId(@PathVariable UUID id) {
-        return ResponseEntity.ok(DossierResponse.depuis(dossierService.trouverParId(id)));
+        var dossier = dossierService.trouverParId(id);
+        var docs = documentRepository.trouverParDossierId(id);
+        return ResponseEntity.ok(DossierResponse.depuis(dossier, docs));
     }
 
     @PostMapping("/{id}/valider")
@@ -84,7 +82,6 @@ public class DossierController {
     public ResponseEntity<DossierResponse> valider(
             @PathVariable UUID id,
             @AuthenticationPrincipal String agentId) {
-
         var dossier = dossierService.validerDossier(
                 new ValiderDossierCommand(id, UUID.fromString(agentId)));
         return ResponseEntity.ok(DossierResponse.depuis(dossier));
@@ -95,7 +92,6 @@ public class DossierController {
     public ResponseEntity<DossierResponse> rejeter(
             @PathVariable UUID id,
             @RequestParam String raison) {
-
         var dossier = dossierService.rejeterDossier(new RejeterDossierCommand(id, raison));
         return ResponseEntity.ok(DossierResponse.depuis(dossier));
     }

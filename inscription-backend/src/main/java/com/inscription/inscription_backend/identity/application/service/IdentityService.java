@@ -58,6 +58,9 @@ public class IdentityService {
             throw new IllegalStateException("Compte désactivé");
         }
 
+        System.out.println("=== MOT DE PASSE FOURNI: " + command.motDePasse());
+        System.out.println("=== HASH EN BASE: " + utilisateur.getMotDePasse().getHashValeur());
+        System.out.println("=== MATCH: " + passwordEncoder.matches(command.motDePasse(), utilisateur.getMotDePasse().getHashValeur()));
         if (!passwordEncoder.matches(command.motDePasse(), utilisateur.getMotDePasse().getHashValeur())) {
             throw new BadCredentialsException("Identifiants invalides");
         }

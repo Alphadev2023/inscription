@@ -45,6 +45,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/agent/**").hasAnyRole("AGENT", "ADMIN")
                         .anyRequest().authenticated()
                 )
+                .httpBasic(basic -> basic.disable())
+                .formLogin(form -> form.disable())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

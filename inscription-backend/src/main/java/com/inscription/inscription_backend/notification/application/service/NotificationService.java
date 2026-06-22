@@ -81,10 +81,10 @@ public class NotificationService implements NotificationPort {
         try {
             emailAdapter.envoyer(cmd.destinataire(), sujet, contenu);
             notification.marquerEnvoye();
-            log.info("Email envoyé à {} pour {}", cmd.destinataire(), cmd.type());
+            log.info("Email envoyÃƒÂ© ÃƒÂ  {} pour {}", cmd.destinataire(), cmd.type());
         } catch (Exception e) {
             notification.marquerEchec(e.getMessage());
-            log.error("Échec envoi email à {} : {}", cmd.destinataire(), e.getMessage());
+            log.error("Ãƒâ€°chec envoi email ÃƒÂ  {} : {}", cmd.destinataire(), e.getMessage());
         }
 
         notificationRepo.sauvegarder(notification);
@@ -96,9 +96,10 @@ public class NotificationService implements NotificationPort {
                         "/queue/notifications",
                         new WsNotificationDto(cmd.type().name(), sujet, LocalDateTime.now().toString())
                 );
-                log.info("WebSocket envoyé à {}", cmd.utilisateurId());
+                log.info("WebSocket envoyÃƒÂ© ÃƒÂ  {}", cmd.utilisateurId());
+                messagingTemplate.convertAndSend("/topic/notifications", new WsNotificationDto(cmd.type().name(), sujet, LocalDateTime.now().toString()));
             } catch (Exception e) {
-                log.warn("Échec envoi WebSocket : {}", e.getMessage());
+                log.warn("Ãƒâ€°chec envoi WebSocket : {}", e.getMessage());
             }
         }
     }

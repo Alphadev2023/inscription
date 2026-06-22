@@ -62,11 +62,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                                     .parseSignedClaims(token)
                                     .getPayload();
                             String userId = claims.getSubject();
+                            log.info("WebSocket Principal configuré : {}", userId);
                             accessor.setUser(new Principal() {
                                 @Override
                                 public String getName() { return userId; }
                             });
-                            log.info("WebSocket connecté pour utilisateur : {}", userId);
+                            log.info("WebSocket connectÃ© pour utilisateur : {}", userId);
                         } catch (Exception e) {
                             log.warn("Token WebSocket invalide : {}", e.getMessage());
                         }

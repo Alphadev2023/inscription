@@ -78,6 +78,7 @@ public class DossierInscription extends AbstractAggregateRoot<DossierInscription
         }
         this.statut = StatutDossier.SOUMIS;
         this.soumisLe = LocalDateTime.now();
+        this.etapeActuelle = 5;
 
         registerEvent(new DossierSoumisEvent(
                 this.id, this.utilisateurId,
