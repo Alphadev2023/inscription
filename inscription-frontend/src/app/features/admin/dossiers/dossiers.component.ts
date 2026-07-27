@@ -10,8 +10,9 @@ import {
   IconComponent,
   IconName,
 } from '../../../shared/components/icon/icon.component';
-
 type FiltreStatut = StatutDossier | 'TOUS';
+
+const PAR_PAGE = 10;
 
 @Component({
   selector: 'app-dossiers',
@@ -21,11 +22,12 @@ type FiltreStatut = StatutDossier | 'TOUS';
 })
 export class DossiersComponent implements OnInit {
   private dossierService = inject(DossierService);
-
   dossiers = signal<DossierSummaryResponse[]>([]);
   loading = signal(true);
   filtreStatut = signal<FiltreStatut>('TOUS');
   recherche = signal('');
+  page = signal(1);
+  readonly parPage = PAR_PAGE;
 
   readonly filtres: { label: string; value: FiltreStatut }[] = [
     { label: 'Tous', value: 'TOUS' },
@@ -55,6 +57,12 @@ export class DossiersComponent implements OnInit {
 
   setFiltre(filtre: FiltreStatut) {
     this.filtreStatut.set(filtre);
+    this.page.set(1);
+  }
+
+  onRecherche(event: Event) {
+    this.recherche.set((event.target as HTMLInputElement).value);
+    this.page.set(1);
   }
 
   dossiersFiltres(): DossierSummaryResponse[] {
@@ -67,6 +75,47 @@ export class DossiersComponent implements OnInit {
         d.prenomCandidat.toLowerCase().includes(this.recherche().toLowerCase());
       return matchStatut && matchRecherche;
     });
+  }
+
+  totalPages(): number {
+    return Math.max(1, Math.ceil(this.dossiersFiltres().length / PAR_PAGE));
+  }
+
+  pageClamped(): number {
+    return Math.min(this.page(), this.totalPages());
+  }
+
+  dossiersPage(): DossierSummaryResponse[] {
+    const debut = (this.pageClamped() - 1) * PAR_PAGE;
+    return this.dossiersFiltres().slice(debut, debut + PAR_PAGE);
+  }
+
+  debutAffichage(): number {
+    if (this.dossiersFiltres().length === 0) return 0;
+    return (this.pageClamped() - 1) * PAR_PAGE + 1;
+  }
+
+  finAffichage(): number {
+    return Math.min(
+      this.pageClamped() * PAR_PAGE,
+      this.dossiersFiltres().length,
+    );
+  }
+
+  pages(): number[] {
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+  }
+
+  pagePrecedente() {
+    this.page.set(Math.max(1, this.pageClamped() - 1));
+  }
+
+  pageSuivante() {
+    this.page.set(Math.min(this.totalPages(), this.pageClamped() + 1));
+  }
+
+  allerPage(n: number) {
+    this.page.set(n);
   }
 
   getStatutClass(statut: string): string {
@@ -89,9 +138,5 @@ export class DossiersComponent implements OnInit {
       REJETE: 'Rejeté',
     };
     return labels[statut] ?? statut;
-  }
-
-  onRecherche(event: Event) {
-    this.recherche.set((event.target as HTMLInputElement).value);
   }
 }

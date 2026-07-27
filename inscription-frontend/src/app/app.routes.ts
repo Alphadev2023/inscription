@@ -98,6 +98,7 @@ export const routes: Routes = [
 
       {
         path: 'agents',
+        canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>
           import('./features/admin/agents/agents.component').then(
             (m) => m.AgentsComponent,
@@ -105,6 +106,7 @@ export const routes: Routes = [
       },
       {
         path: 'statistiques',
+        canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>
           import('./features/admin/statistiques/statistiques.component').then(
             (m) => m.StatistiquesComponent,

@@ -1,4 +1,4 @@
-import { useDossiers } from "@/application/hooks/dossiers/useDossiers"
+﻿import { useDossiers } from "@/application/hooks/dossiers/useDossiers"
 import { useValiderDossier, useRejeterDossier } from "@/application/hooks/dossiers/useDossiers"
 import Spinner from "@/presentation/components/ui/Spinner"
 import Badge from "@/presentation/components/ui/Badge"
@@ -60,7 +60,7 @@ export default function AgentDashboard() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge statut={d.statut} />
-                  <button onClick={() => navigate(`/admin/dossiers/${d.id}`)}
+                  <button onClick={() => navigate(`/agent/dossiers/${d.id}`)}
                     className="p-1.5 hover:bg-neutral-100 rounded text-neutral-400 hover:text-neutral-600 transition-colors">
                     <Eye size={14} />
                   </button>
@@ -105,3 +105,4 @@ export default function AgentDashboard() {
     </div>
   )
 }
+

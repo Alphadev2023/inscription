@@ -120,6 +120,7 @@ export interface RegisterRequest {
   email: string;
   motDePasse: string;
   role: Role;
+  recaptchaToken: string;
 }
 
 export interface DashboardStats {

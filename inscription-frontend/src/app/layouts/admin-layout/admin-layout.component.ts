@@ -54,28 +54,30 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
           >
             <app-icon name="file-text" [size]="18" /> Dossiers
           </a>
-          <a
-            routerLink="/admin/agents"
-            routerLinkActive="bg-primary-50 text-primary-700"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
-          >
-            <app-icon name="users" [size]="18" />
-            Agents
-          </a>
+          @if (auth.role() === 'ADMIN') {
+            <a
+              routerLink="/admin/agents"
+              routerLinkActive="bg-primary-50 text-primary-700"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
+            >
+              <app-icon name="users" [size]="18" />
+              Agents
+            </a>
 
-          <p
-            class="px-3 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider mt-4"
-          >
-            Analytique
-          </p>
-          <a
-            routerLink="/admin/statistiques"
-            routerLinkActive="bg-primary-50 text-primary-700"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
-          >
-            <app-icon name="bar-chart-2" [size]="18" />
-            Statistiques
-          </a>
+            <p
+              class="px-3 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider mt-4"
+            >
+              Analytique
+            </p>
+            <a
+              routerLink="/admin/statistiques"
+              routerLinkActive="bg-primary-50 text-primary-700"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-600 hover:bg-neutral-50 transition-colors"
+            >
+              <app-icon name="bar-chart-2" [size]="18" />
+              Statistiques
+            </a>
+          }
         </nav>
 
         <div class="px-3 py-4 border-t border-neutral-800">
@@ -150,13 +152,15 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
           >
             <app-icon name="file-text" [size]="18" /> Dossiers
           </a>
-          <a
-            routerLink="/admin/agents"
-            (click)="mobileMenuOpen.set(false)"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-400 hover:bg-neutral-800 hover:text-white"
-          >
-            <app-icon name="users" [size]="18" /> Agents
-          </a>
+          @if (auth.role() === 'ADMIN') {
+            <a
+              routerLink="/admin/agents"
+              (click)="mobileMenuOpen.set(false)"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-neutral-400 hover:bg-neutral-800 hover:text-white"
+            >
+              <app-icon name="users" [size]="18" /> Agents
+            </a>
+          }
           <button
             (click)="auth.logout()"
             class="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg text-sm font-medium text-neutral-400 hover:bg-neutral-800 hover:text-danger-400"

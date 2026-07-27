@@ -15,6 +15,8 @@ import AdminAgents from "@/presentation/pages/admin/AdminAgents";
 import AdminStats from "@/presentation/pages/admin/AdminStats";
 
 import AgentDashboard from "@/presentation/pages/agent/AgentDashboard";
+import AgentDossiers from "@/presentation/pages/agent/AgentDossiers";
+import AgentDossierDetail from "@/presentation/pages/agent/AgentDossierDetail";
 
 import CandidatDashboard from "@/presentation/pages/candidat/CandidatDashboard";
 import CandidatInscription from "@/presentation/pages/candidat/CandidatInscription";
@@ -58,6 +60,8 @@ export default function App() {
           }
         >
           <Route path="/agent/dashboard" element={<AgentDashboard />} />
+          <Route path="/agent/dossiers" element={<AgentDossiers />} />
+          <Route path="/agent/dossiers/:id" element={<AgentDossierDetail />} />
         </Route>
 
         {/* Candidat */}

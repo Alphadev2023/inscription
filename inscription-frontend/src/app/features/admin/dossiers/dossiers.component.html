@@ -111,7 +111,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-neutral-100">
-            @for (dossier of dossiersFiltres(); track dossier.id) {
+            @for (dossier of dossiersPage(); track dossier.id) {
               <tr class="hover:bg-neutral-50 transition-colors">
                 <!-- Candidat -->
                 <td class="py-4 pr-4">
@@ -193,9 +193,40 @@
         class="mt-4 pt-4 border-t border-neutral-100 flex items-center justify-between"
       >
         <p class="text-sm text-neutral-500">
-          {{ dossiersFiltres().length }} dossier(s) affiché(s) sur
-          {{ dossiers().length }}
+          {{ debutAffichage() }}-{{ finAffichage() }} sur
+          {{ dossiersFiltres().length }} dossier(s)
         </p>
+        @if (totalPages() > 1) {
+          <div class="flex items-center gap-1">
+            <button
+              (click)="pagePrecedente()"
+              [disabled]="pageClamped() === 1"
+              class="p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            >
+              <app-icon name="chevron-left" [size]="16" />
+            </button>
+            @for (n of pages(); track n) {
+              <button
+                (click)="allerPage(n)"
+                [class]="
+                  'w-7 h-7 rounded-lg text-xs font-medium transition-colors ' +
+                  (n === pageClamped()
+                    ? 'bg-primary-600 text-white'
+                    : 'text-neutral-500 hover:bg-neutral-100')
+                "
+              >
+                {{ n }}
+              </button>
+            }
+            <button
+              (click)="pageSuivante()"
+              [disabled]="pageClamped() === totalPages()"
+              class="p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            >
+              <app-icon name="chevron-right" [size]="16" />
+            </button>
+          </div>
+        }
       </div>
     }
   </div>

@@ -28,7 +28,9 @@ export function useRegister() {
     mutationFn: (data: RegisterRequest) => authApi.register(data),
     onSuccess: (res) => {
       setAuth(res.token, res.email, res.role, res.userId)
-      navigate("/candidat/dashboard")
+      if (res.role === Role.ADMIN) navigate("/admin/dashboard")
+      else if (res.role === Role.AGENT) navigate("/agent/dashboard")
+      else navigate("/candidat/dashboard")
     },
   })
 }

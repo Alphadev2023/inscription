@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { StatutDossier, StatutValidation } from "@/domain/enums";
 
-export default function AdminDossierDetail() {
+export default function AgentDossierDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: dossier, isLoading } = useDossier(id ?? "");
@@ -55,7 +55,7 @@ export default function AdminDossierDetail() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate("/admin/dossiers")}
+          onClick={() => navigate("/agent/dossiers")}
           className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
         >
           <ArrowLeft size={18} className="text-neutral-600" />
@@ -84,7 +84,7 @@ export default function AdminDossierDetail() {
               <button
                 onClick={() =>
                   validerDossier.mutate(dossier.id, {
-                    onSuccess: () => navigate("/admin/dossiers"),
+                    onSuccess: () => navigate("/agent/dossiers"),
                   })
                 }
                 disabled={validerDossier.isPending}
@@ -121,7 +121,7 @@ export default function AdminDossierDetail() {
                 label: "Soumis le",
                 value: dossier.soumisLe
                   ? new Date(dossier.soumisLe).toLocaleString("fr-FR")
-                  : "Ã-Â-Ã-â-šÂ-Ã-â--Â-",
+                  : "-",
               },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between">
@@ -299,7 +299,7 @@ export default function AdminDossierDetail() {
                     {
                       onSuccess: () => {
                         setShowRejetModal(false);
-                        navigate("/admin/dossiers");
+                        navigate("/agent/dossiers");
                       },
                     },
                   )
