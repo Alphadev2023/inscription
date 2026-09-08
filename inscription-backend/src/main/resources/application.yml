@@ -1,3 +1,5 @@
+name: inscription
+
 spring:
   application:
     name: inscription-backend
@@ -36,24 +38,14 @@ spring:
   mail:
     host: sandbox.smtp.mailtrap.io
     port: 2525
-    username: ${MAIL_USER}
-    password: ${MAIL_PASS}
+    username: ${MAIL_USER:}
+    password: ${MAIL_PASS:}
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID:}
-            client-secret: ${GOOGLE_CLIENT_SECRET:}
-            scope:
-              - email
-              - profile
 
 springdoc:
   api-docs:
@@ -61,9 +53,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     tags-sorter: alpha
+
 app:
   frontend:
-    url: ${FRONTEND_URL:http://localhost:5173}
+    url: ${FRONTEND_URL:http://localhost:4202}
   jwt:
     secret: ${JWT_SECRET:3c4f2a8b9d1e6f7a0b5c3d2e4f8a1b6c9d0e3f2a2b3c4d5e6f1a2b3c4d5e6f7}
     expiration: 86400000
@@ -72,14 +65,16 @@ app:
     path: ${UPLOAD_DIR:./uploads}
     allowed-types: application/pdf,image/jpeg,image/png
   oauth2:
-    redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:4200/oauth2/redirect}
+    redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:4202/oauth2/redirect}
   recaptcha:
     secret-key: ${RECAPTCHA_SECRET_KEY:}
+
 server:
   port: 8081
   error:
     include-message: always
     include-binding-errors: always
+
 stripe:
   secret-key: ${STRIPE_SECRET_KEY:}
   webhook:

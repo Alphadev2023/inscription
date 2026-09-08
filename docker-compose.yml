@@ -1,19 +1,20 @@
-version: "3.8"
+name: inscription
 
 services:
   postgres:
     image: postgres:17-alpine
     container_name: inscription_db
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: inscription_db
+      POSTGRES_DB: ${DB_NAME:-inscription_db}
       POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:?DB_PASS manquant, copiez .env.example vers .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5433}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,32 +22,52 @@ services:
   backend:
     build: ./inscription-backend
     container_name: inscription_backend
+    restart: unless-stopped
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/inscription_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-inscription_db}
+      SPRING_PROFILES_ACTIVE: oauth
       DB_USER: ${DB_USER:-postgres}
-      DB_PASS: ${DB_PASS:-postgres}
-      JWT_SECRET: ${JWT_SECRET}
-      MAIL_USER: ${MAIL_USER}
-      MAIL_PASS: ${MAIL_PASS}
+      DB_PASS: ${DB_PASS:?DB_PASS manquant, copiez .env.example vers .env}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant, copiez .env.example vers .env}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASS: ${MAIL_PASS:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-non-configure}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-non-configure}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY:-}
+      OAUTH2_REDIRECT_URI: ${OAUTH2_REDIRECT_URI:-http://localhost:4202/oauth2/redirect}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4202}
       UPLOAD_DIR: /app/uploads
     volumes:
       - uploads_data:/app/uploads
     ports:
-      - "8081:8081"
+      - "${API_PORT:-8083}:8081"
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/api-docs || exit 1"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      start_period: 90s
+      retries: 5
 
   frontend:
     build: ./inscription-frontend
     container_name: inscription_frontend
+    restart: unless-stopped
     ports:
-      - "80:80"
+      - "${ANGULAR_PORT:-4202}:80"
+    depends_on:
+      - backend
+
+  frontend-react:
+    build: ./inscription-frontend-react
+    container_name: inscription_frontend_react
+    restart: unless-stopped
+    ports:
+      - "${REACT_PORT:-4203}:80"
     depends_on:
       - backend
 
